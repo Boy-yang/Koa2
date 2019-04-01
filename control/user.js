@@ -6,54 +6,83 @@ const userHelp = require( '../dbHelp/userHelp.js' );
 
 //注册逻辑处理
 exports.register = async ( ctx, next ) => {
-    console.log( ctx.request.body )
-    let resData = {
-        code: 0,
-        msg: ''
-    }
-    const { phoneNumber, password, repassword } = ctx.request.body;
-    if ( phoneNumber === 'null' ) {
-        resData.code = 1;
-        resData.msg = '账号不能为空';
-        ctx.body = resData;
-        return;
-    } else if ( password === 'null' ) {
-        resData.code = 2;
-        resData.msg = '密码不能为空';
-        ctx.body = resData;
-        return;
-    } else if ( password !== repassword ) {
-        resData.code = 3;
-        resData.msg = '两次输入的密码不一致';
-        ctx.body = resData;
-        return;
-    } else {
-        await User.findOne( {
-            phoneNumber: phoneNumber
-        } ).then( userInfo => {
-            if ( !userInfo ) {//如果用户不存在，则将前端传来的用户信息存库
+    const { phoneNumber, password } = ctx.request.body;
+    await User.findOne( {
+        phoneNumber: phoneNumber
+    } )
+        .then( userInfo => {
+            if ( userInfo ) {
+                ctx.body = {
+                    code: 2,
+                    msg: '用户已存在'
+                };
+            } else {
+                //用户不存在，则将前端传来的用户信息存库
                 const user = new User( {
                     phoneNumber: phoneNumber,
                     password: password,
                 } );
-                try {
-                    user.save();
-                    resData.msg = '注册成功';
-                    ctx.body = resData;       
-                } catch (error) {
-                    resData.msg='注册失败';
-                    ctx.body=resData;   
-                }     
-            } else {
-                resData.code = 4;
-                resData.msg = '用户已存在';
-                ctx.body = resData;
+                return user.save()   //存库之后返回promise结果   
             }
-        } ).catch( err  => {
-            if(err) throw err;
         } )
-    };
-}
+        .then( res => {
+            if ( res ) {//如果res存在，说明保存成功，即注册成功
+                ctx.body={
+                    code:1,
+                    msg:'注册成功'
+                };
+            }
+        } )
+        .catch( e => {//存库失败，响应注册失败
+            if ( e ) {
+                ctx.body={
+                    code:3,
+                    msg:'注册失败'
+                };
+                return next;
+            }
+        } )
+};
+
+
+//登陆验证处理
+exports.login = async ( ctx, next ) => {
+    const { phoneNumber,password } = ctx.request.body;
+    console.log(phoneNumber,password)
+    await User.findOne( {
+        phoneNumber: phoneNumber
+    } )
+        .then( userInfo => {
+            if ( !userInfo ) {
+                ctx.body={
+                    code:2,
+                    msg:'不存在该用户'
+                }
+                return;
+            }
+            if(userInfo.password === password){
+                ctx.body = {
+                    code: 1,
+                    msg: '登陆成功'
+                }
+            }else{
+                ctx.body={
+                    code:3,
+                    msg:'密码错误'
+                }
+            }
+        } )
+        .catch( e => {//存库失败，响应注册失败
+            if ( e ) {
+                ctx.body={
+                    code:4,
+                    msg:'登陆失败',
+                }
+                return next;
+            }
+        } )
+};
+
 /**
  * 注册新用户
  * @param {Function} next          [description]
