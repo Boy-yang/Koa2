@@ -9,9 +9,9 @@ router.post( '/user/register',user.register)
 
 //login
 router.post( '/user/login',user.login)
-//userInfo
-router.post( '/user/userInfo',user.register)
 
+//listData
+router.get( '/user/listdata',user.listData)
 
 // // user
 // router.post( '/u/signup', App.hasBody, User.signup )

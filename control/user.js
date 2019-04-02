@@ -10,8 +10,8 @@ exports.register = async ( ctx, next ) => {
     await User.findOne( {
         phoneNumber: phoneNumber
     } )
-        .then( userInfo => {
-            if ( userInfo ) {
+        .then( res => {
+            if ( res ) {
                 ctx.body = {
                     code: 2,
                     msg: '用户已存在'
@@ -27,61 +27,97 @@ exports.register = async ( ctx, next ) => {
         } )
         .then( res => {
             if ( res ) {//如果res存在，说明保存成功，即注册成功
-                ctx.body={
-                    code:1,
-                    msg:'注册成功'
+                ctx.body = {
+                    code: 1,
+                    msg: '注册成功'
                 };
             }
         } )
         .catch( e => {//存库失败，响应注册失败
             if ( e ) {
-                ctx.body={
-                    code:3,
-                    msg:'注册失败'
+                ctx.body = {
+                    code: 3,
+                    msg: '注册失败'
                 };
                 return next;
             }
         } )
 };
-
 
 //登陆验证处理
 exports.login = async ( ctx, next ) => {
-    const { phoneNumber,password } = ctx.request.body;
-    console.log(phoneNumber,password)
+    const { phoneNumber, password } = ctx.request.body;
     await User.findOne( {
         phoneNumber: phoneNumber
     } )
-        .then( userInfo => {
-            if ( !userInfo ) {
-                ctx.body={
-                    code:2,
-                    msg:'不存在该用户'
+        .then( res => {
+            if ( !res ) {
+                ctx.body = {
+                    code: 2,
+                    msg: '不存在该用户'
                 }
                 return;
             }
-            if(userInfo.password === password){
+            if ( res.password === password ) {
                 ctx.body = {
                     code: 1,
-                    msg: '登陆成功'
+                    msg: '登陆成功',
+                    phoneNumber,
                 }
-            }else{
-                ctx.body={
-                    code:3,
-                    msg:'密码错误'
+            } else {
+                ctx.body = {
+                    code: 3,
+                    msg: '密码错误'
                 }
             }
         } )
         .catch( e => {//存库失败，响应注册失败
             if ( e ) {
-                ctx.body={
-                    code:4,
-                    msg:'登陆失败',
+                ctx.body = {
+                    code: 4,
+                    msg: '登陆失败',
                 }
                 return next;
             }
         } )
 };
+
+exports.listData = async ( ctx, next ) => {
+    ctx.body = [
+        {
+          "id": 1,
+          "imgSrc":"//img3.winxuancdn.com/3347/1201713347_49.jpg?1538298144625&imageMogr2/thumbnail/200x200",
+          "name": "延禧攻略",
+          "author": "周末",
+          "price": "￥88.00",
+          "publish": "九州出版社",
+        },
+        {
+          "id": 2,
+          "imgSrc":"//img1.winxuancdn.com/7193/1201727193_0_1.jpg?1535353851455&imageMogr2/thumbnail/200x200",
+          "name": "国学之旅",
+          "author": "明霞 著 子衿 绘",
+          "price": "￥69.0",
+          "publish": "九州出版社",
+        },
+        {
+          "id": 3,
+          "imgSrc":"//img3.winxuancdn.com/3347/1201713347_49.jpg?1538298144625&imageMogr2/thumbnail/200x200",
+          "name": "延禧攻略",
+          "author": "周末",
+          "price": "￥59.0",
+          "publish": "九州出版社",
+        },
+        {
+          "id": 4,
+          "imgSrc":"//img1.winxuancdn.com/7193/1201727193_0_1.jpg?1535353851455&imageMogr2/thumbnail/200x200",
+          "name": "国学之旅",
+          "author": "明霞 著 子衿 绘",
+          "price": "￥69.0",
+          "publish": "九州出版社",
+        }
+      ]
+}
 
 /**
  * 注册新用户
