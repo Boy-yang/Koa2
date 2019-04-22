@@ -10,8 +10,8 @@ router.post( '/user/register',user.register)
 //login
 router.post( '/user/login',user.login)
 
-//listData
-router.get( '/user/listdata',user.listData)
+//article
+router.get( '/user/article',user.article)
 
 // // user
 // router.post( '/u/signup', App.hasBody, User.signup )
