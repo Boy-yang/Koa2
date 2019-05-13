@@ -6,9 +6,10 @@ const userHelp = require('../dbHelp/userHelp.js');
 
 //注册逻辑处理
 exports.register = async (ctx, next) => {
-    const { phoneNumber, password } = ctx.request.body;
+    const { username,phoneNumber, password } = ctx.request.body;
     await User.findOne({
-        phoneNumber: phoneNumber
+        username,
+        phoneNumber,
     })
         .then(res => {
             if (res) {
@@ -19,6 +20,7 @@ exports.register = async (ctx, next) => {
             } else {
                 //用户不存在，则将前端传来的用户信息存库
                 const user = new User({
+                    username:username,
                     phoneNumber: phoneNumber,
                     password: password,
                 });
