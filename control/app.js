@@ -6,7 +6,6 @@ let User = mongoose.model('User')
 
 exports.hasBody = async (ctx, next) => {
   let body = ctx.request.body || {}
-  console.log(body)
   if (Object.keys(body).length === 0) {
     ctx.body = {
       success: false,
@@ -19,7 +18,7 @@ exports.hasBody = async (ctx, next) => {
 
 // 检验token
 exports.hasToken = async (ctx, next) => {
-  var accessToken = ctx.query.accessToken
+  let accessToken = ctx.query.accessToken;
 
   if (!accessToken) {
     accessToken = ctx.request.body.accessToken

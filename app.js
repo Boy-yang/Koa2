@@ -1,6 +1,7 @@
 'use strict'
 const Koa = require('koa')
 const app = new Koa()
+const cors = require('koa2-cors')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
@@ -12,17 +13,20 @@ const mongoose = require('mongoose')
 const router = require('./routes/config')
 require("@babel/register");
 
-  // 跨域设置
-app.use(async (ctx, next)=> {
-  ctx.set('Access-Control-Allow-Origin', 'http://localhost:8000');
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-  ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-  if (ctx.method == 'OPTIONS') {
-    ctx.body = 200; 
-  } else {
-    await next();
-  }
-});
+// 跨域设置
+app.use(cors({
+  origin: function (ctx) {
+    if (ctx.url === '/login') {
+      return "*"; // 允许来自所有域名请求
+    }
+    return 'http://localhost:8000';
+  },
+  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+  maxAge: 5,
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'DELETE'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}));
 
 // error handler
 onerror(app)
@@ -33,7 +37,17 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(logger())
-app.use(session(app))
+app.keys = ['some secret hurr'];
+const CONFIG = {
+   key: 'koa:sess',   //cookie key (default is koa:sess)
+   maxAge: 86400000,  // cookie的过期时间 maxAge in ms (default is 1 days)
+   overwrite: true,  //是否可以overwrite    (默认default true)
+   httpOnly: true, //cookie是否只有服务器端可以访问 httpOnly or not (default true)
+   signed: true,   //签名默认true
+   rolling: false,  //在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
+   renew: false,  //(boolean) renew session when session is nearly expired,
+};
+app.use(session(CONFIG, app));
 
 
 // logger

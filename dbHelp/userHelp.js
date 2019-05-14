@@ -4,6 +4,19 @@ const mongoose = require('mongoose')
 let User = mongoose.model('User')
 
 /**
+ * 通过用户名查找
+ * @param  {[type]} options.phoneNumber [description]
+ * @return {[type]}                     [description]
+ */
+exports.findByUserName = async ({username}) => {
+    let res = null;
+    let user=await User.findOne({
+        username
+    }).exec();
+    if(user) res=user;
+    return res;
+}
+/**
  * 通过电话号码查询
  * @param  {[type]} options.phoneNumber [description]
  * @return {[type]}                     [description]

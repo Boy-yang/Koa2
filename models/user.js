@@ -8,11 +8,12 @@ const mongoose = require('mongoose');
  * @type {mongoose}
  */
 let UserSchema = new mongoose.Schema({
-    phoneNumber: {
+    username: {
         unique: true,
         type: String
     },
-    password:String,
+    phoneNumber: String,
+    password: String,
     verifyCode: String,//验证码
     areaCode: String,
     verified: {

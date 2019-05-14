@@ -4,11 +4,19 @@ const {user,app} = require( '../control' );
 
 router.prefix( '/api' );
 
+
+
 //register
 router.post( '/user/register',user.register)
 
 //login
 router.post( '/user/login',user.login)
+
+//getUserInfo
+router.post( '/user/getUserInfo',user.getUserInfo)
+
+//logout
+router.get('/user/logout',user.logout)
 
 //article
 router.get( '/user/article',user.article)
