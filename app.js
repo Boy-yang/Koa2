@@ -15,12 +15,7 @@ require("@babel/register");
 
 // 跨域设置
 app.use(cors({
-  origin: function (ctx) {
-    if (ctx.url === '/login') {
-      return "*"; // 允许来自所有域名请求
-    }
-    return 'http://localhost:8000';
-  },
+  origin: ['http://localhost:8000'],
   exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
   maxAge: 5,
   credentials: true,
@@ -48,7 +43,6 @@ const CONFIG = {
    renew: false,  //(boolean) renew session when session is nearly expired,
 };
 app.use(session(CONFIG, app));
-
 
 // logger
 app.use(async (ctx, next) => {

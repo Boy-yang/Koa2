@@ -1,7 +1,7 @@
 const user = require('./user');
-const app = require('./app');
+const article = require('./article');
 
 
 module.exports={
-    user,app
+    user,article
 }
