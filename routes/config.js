@@ -12,6 +12,8 @@ router.get('/user/logout', user.logout)
 
 //article
 router.get('/user/addArticle', article.addArticle)
+router.get('/user/delArticle', article.delArticle)
+router.get('/user/updateArticle', article.updateArticle)
 router.get('/user/articleList', article.getArticleList)
 router.get('/user/articleDetail', article.getArticleDetail)
 
