@@ -5,7 +5,7 @@ const articleHelp = require('../dbHelp/articleHelp.js');
 
 //添加文章
 exports.addArticle = async (ctx, next) => {
-    const { title, content, atTime, isPublish } = ctx.query;
+    const { title, content, atTime, isPublish } = ctx.request.body;
     const author = ctx.session.userInfo.username;
     await new Article({
         title,

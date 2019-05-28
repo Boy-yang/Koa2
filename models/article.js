@@ -9,12 +9,6 @@ let articleSchema = new mongoose.Schema({
     author: String,//作者
     tags: Array,//标签
     isPublish: Boolean,//是否发布
-    comment:{
-        commentator:String,//评论者
-        commentContent:String,//评论内容
-        commentTime:String,//评论时间
-        avatar:String,//评论者头像   
-    },
     meta: {
         createAt: {
             type: Date,
