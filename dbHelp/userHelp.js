@@ -16,6 +16,7 @@ exports.findByUserName = async ({username}) => {
     if(user) res=user;
     return res;
 }
+
 /**
  * 通过电话号码查询
  * @param  {[type]} options.phoneNumber [description]
