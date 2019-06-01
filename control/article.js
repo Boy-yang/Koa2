@@ -87,7 +87,7 @@ exports.getArticleList = async (ctx, next) => {
     start = Number(start);
     limit = Number(limit);
     let skip = (start - 1) < 0 ? 0 : (start - 1) * 5;
-    const total = await Article.count({ isPublish });
+    const total = await Article.countDocuments({ isPublish });
     const data = await Article.find(null, '_id title author time content isPublish', {
         skip: skip,
         limit,

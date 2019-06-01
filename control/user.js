@@ -1,10 +1,13 @@
 'use strict'
 const xss = require('xss');
+const crypto = require('crypto');//用户密码加密处理
 const User = require('../models/user.js');
 const userHelp = require('../dbHelp/userHelp.js');
 //注册逻辑处理
 exports.register = async (ctx, next) => {
-    const { username, phoneNumber, password } = ctx.request.body;
+    let { username, phoneNumber, password } = ctx.request.body;
+    let md5 = crypto.createHash('md5');
+    password=md5.update(password).digest('hex');
     let res = await userHelp.findByUserName({ username });
     if (!res) {
         let user = new User({
@@ -28,9 +31,11 @@ exports.register = async (ctx, next) => {
 
 //登陆验证处理
 exports.login = async (ctx, next) => {
-    const { username, password } = ctx.request.body;
+    let { username, password } = ctx.request.body;
+    let md5 = crypto.createHash('md5');
+    password=md5.update(password).digest('hex');
+    console.log(password);
     let res = await User.findOne({ username, password }).exec();
-    console.log(res)
     if (!res) {
         ctx.body = {
             success: false,
